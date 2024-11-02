@@ -1,0 +1,9 @@
+app:
+  name: "calc_ipoteca"
+  version: "1.0.0"
+
+http:
+  port: 8080
+
+log:
+  level: 1
