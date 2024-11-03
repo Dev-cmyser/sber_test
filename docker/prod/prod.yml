@@ -1,11 +1,11 @@
 services:
   calc_ipoteca:
     restart: always
-    container_name: calc_ipoteca
+    container_name: calc_ipoteca_prod
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: docker/prod/Dockerfile
     ports:
       - "8080:8080"
     env_file:
-      - ./.env
+      - ../../.env

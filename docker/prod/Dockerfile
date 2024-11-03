@@ -1,19 +1,13 @@
-# Step 1: Modules caching
-FROM golang:1.22.3-alpine as modules
-COPY go.mod go.sum /modules/
-WORKDIR /modules
-RUN go mod download
-
-# Step 2: Builder
-FROM golang:1.22.3-alpine as builder
-COPY --from=modules /go/pkg /go/pkg
+# Step 1: Vendor Setup
+FROM golang:1.23.2-alpine as builder
 COPY . /app
 WORKDIR /app
-RUN CGO_ENABLED=0 GOOS=linux  \
-    go build  -o /bin/app ./cmd/main.go
 
-# Step 3: Final
+# Step 2: Build
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /bin/app ./cmd/app/main.go
+
+# Step 3: Final Stage
 FROM scratch
-COPY --from=builder bin/app /
-COPY --from=builder app/config /config
+COPY --from=builder /bin/app /
+COPY --from=builder /app/config /config
 CMD ["/app"]

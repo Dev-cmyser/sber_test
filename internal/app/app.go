@@ -1,6 +1,10 @@
 package app
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/Dev-cmyser/calc_ipoteka/config"
 )
 
@@ -49,20 +53,20 @@ func Run(configPath string) {
 
 	// Waiting signal
 	// log.Info("Configuring graceful shutdown...")
-	// interrupt := make(chan os.Signal, 1)
-	// signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	// select {
-	// case s := <-interrupt:
-	// 	log.Info("app - Run - signal: " + s.String())
-	// case err = <-httpServer.Notify():
-	// 	log.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
-	// }
+	select {
+	case s := <-interrupt:
+		log.Info().Msg("app - Run - signal: " + s.String())
+		// case err = <-httpServer.Notify():
+		log.Error().Msgf("app - Run - httpServer.Notify: %w", err)
+	}
 
 	// Graceful shutdown
-	// log.Info("Shutting down...")
+	log.Info().Msg("Shutting down...")
 	// err = httpServer.Shutdown()
-	// if err != nil {
-	// 	log.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
-	// }
+	if err != nil {
+		log.Error().Msgf("app - Run - httpServer.Shutdown: %w", err)
+	}
 }
