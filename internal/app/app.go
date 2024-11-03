@@ -35,6 +35,7 @@ func Run(cfg *config.Config) {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
+	var err error
 	select {
 	case s := <-interrupt:
 		log.Info("app - Run - signal: " + s.String())

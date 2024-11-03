@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -10,12 +11,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type UseCase interface {
+	Execute(context.Context, mortgage.Request) (entity.Mortgage, error)
+	Cache(context.Context) ([]entity.CachedMortgage, error)
+}
+
 type ipotecaRoutes struct {
-	uc usecase.Mortgage
+	uc UseCase
 	l  logger.Interface
 }
 
-func newIpotecaRoutes(handler *gin.RouterGroup, uc usecase.Mortgage, l logger.Interface) {
+func newIpotecaRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface) {
 	routers := &ipotecaRoutes{uc, l}
 
 	h := handler.Group("/mortgage")

@@ -9,9 +9,9 @@ type Params struct {
 }
 
 type Program struct {
-	Salary   bool `json:"salary"`
-	Military bool `json:"military"`
-	Base     bool `json:"base"`
+	Salary   bool `json:"salary" binding:"omitempty"`
+	Military bool `json:"military" binding:"omitempty"`
+	Base     bool `json:"base" binding:"omitempty"`
 }
 
 type Aggregates struct {
@@ -20,4 +20,11 @@ type Aggregates struct {
 	MonthlyPayment  int       `json:"monthly_payment"`
 	Overpayment     int       `json:"overpayment"`
 	LastPaymentDate time.Time `json:"last_payment_date"`
+}
+
+type Request struct {
+	ObjectCost     int     `json:"object_cost"`
+	InitialPayment int     `json:"initial_payment"`
+	Months         int     `json:"months"`
+	Program        Program `json:"program"`
 }
