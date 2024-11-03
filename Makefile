@@ -9,3 +9,13 @@ prod:
 lint:
 	golangci-lint run -c .golangci.yml
 .PHONY: lint
+
+remove:
+	docker rm calc_ipoteca
+.PHONY: remove
+
+stop:
+	docker stop calc_ipoteca
+.PHONY: stop
+
+clean: stop remove

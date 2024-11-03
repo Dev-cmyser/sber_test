@@ -1,7 +1,7 @@
 services:
   calc_ipoteca:
     restart: always
-    container_name: calc_ipoteca_prod
+    container_name: calc_ipoteca
     build:
       context: ../../
       dockerfile: docker/prod/Dockerfile
