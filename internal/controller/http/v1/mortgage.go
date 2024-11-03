@@ -21,7 +21,7 @@ type ipotecaRoutes struct {
 	l  logger.Interface
 }
 
-func newIpotecaRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface) {
+func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface) {
 	routers := &ipotecaRoutes{uc, l}
 
 	h := handler.Group("/mortgage")

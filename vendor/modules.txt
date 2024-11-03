@@ -45,12 +45,6 @@ github.com/cloudwego/base64x
 ## explicit; go 1.16
 github.com/cloudwego/iasm/expr
 github.com/cloudwego/iasm/x86_64
-# github.com/evrone/go-clean-template v1.4.2
-## explicit; go 1.17
-github.com/evrone/go-clean-template/docs
-github.com/evrone/go-clean-template/internal/entity
-github.com/evrone/go-clean-template/internal/usecase
-github.com/evrone/go-clean-template/pkg/logger
 # github.com/gabriel-vasile/mimetype v1.4.3
 ## explicit; go 1.20
 github.com/gabriel-vasile/mimetype
@@ -100,6 +94,8 @@ github.com/goccy/go-json/internal/encoder/vm_color_indent
 github.com/goccy/go-json/internal/encoder/vm_indent
 github.com/goccy/go-json/internal/errors
 github.com/goccy/go-json/internal/runtime
+# github.com/google/go-cmp v0.5.6
+## explicit; go 1.8
 # github.com/hashicorp/golang-lru/v2 v2.0.7
 ## explicit; go 1.18
 github.com/hashicorp/golang-lru/v2/expirable
@@ -223,6 +219,8 @@ golang.org/x/tools/go/buildutil
 golang.org/x/tools/go/internal/cgo
 golang.org/x/tools/go/loader
 golang.org/x/tools/internal/typeparams
+# golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
+## explicit; go 1.11
 # google.golang.org/protobuf v1.34.1
 ## explicit; go 1.17
 google.golang.org/protobuf/encoding/protowire

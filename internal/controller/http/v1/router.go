@@ -21,6 +21,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, uc UseCase) {
 
 	h := handler.Group("/v1")
 	{
-		newIpotecaRoutes(h, uc, l)
+		newMortgageRoutes(h, uc, l)
 	}
 }
