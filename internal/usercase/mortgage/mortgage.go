@@ -9,15 +9,17 @@ import (
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/cache"
 )
 
-type MortgageUseCase struct {
-	cache cache.Cache[int, entity.CachedMortgage]
+type MortgageUseCase[K comparable, V any] struct {
+	c cache.Cache[K, V]
 }
 
-func New() *MortgageUseCase {
-	return &MortgageUseCase{}
+func New[K comparable, V any](c cache.Cache[K, V]) *MortgageUseCase[K, V] {
+	return &MortgageUseCase[K, V]{
+		c: c,
+	}
 }
 
-func (m *MortgageUseCase) Execute(ctx context.Context, req mortgage.Request) (entity.Mortgage, error) {
+func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Request) (entity.Mortgage, error) {
 	if req.ObjectCost <= 0 {
 		return entity.Mortgage{}, errors.New("object cost must be greater than zero")
 	}
@@ -25,6 +27,6 @@ func (m *MortgageUseCase) Execute(ctx context.Context, req mortgage.Request) (en
 	return entity.Mortgage{}, nil
 }
 
-func (m *MortgageUseCase) Cache(ctx context.Context) ([]entity.CachedMortgage, error) {
+func (uc *MortgageUseCase[K, V]) Cache(ctx context.Context) ([]entity.CachedMortgage, error) {
 	return []entity.CachedMortgage{}, nil
 }

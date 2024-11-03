@@ -9,9 +9,10 @@ import (
 
 type (
 	Config struct {
-		App  `yaml:"app"`
-		HTTP `yaml:"http"`
-		Log  `yaml:"log"`
+		App   `yaml:"app"`
+		HTTP  `yaml:"http"`
+		Log   `yaml:"log"`
+		Cache `yaml:"cache"`
 	}
 
 	App struct {
@@ -25,6 +26,10 @@ type (
 
 	Log struct {
 		Level string `env-required:"true" yaml:"level" env:"LOG_LEVEL"`
+	}
+	Cache struct {
+		TTL  int `env-required:"true" yaml:"ttl_seconds" env:"TTL"`
+		SIZE int `env-required:"true" yaml:"size" env:"SIZE"`
 	}
 )
 
