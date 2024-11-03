@@ -1,4 +1,4 @@
-run:
+dev:
 	docker compose -f docker/dev/dev.yml up --no-log-prefix --attach app
 .PHONY: run
 

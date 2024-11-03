@@ -24,7 +24,7 @@ type (
 	}
 
 	Log struct {
-		Level int8 `env-required:"true" yaml:"level" env:"LOG_LEVEL"`
+		Level string `env-required:"true" yaml:"level" env:"LOG_LEVEL"`
 	}
 )
 

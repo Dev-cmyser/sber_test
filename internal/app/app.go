@@ -1,11 +1,16 @@
 package app
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/Dev-cmyser/calc_ipoteka/config"
+	v1 "github.com/Dev-cmyser/calc_ipoteka/internal/controller/http/v1"
+	"github.com/Dev-cmyser/calc_ipoteka/pkg/httpserver"
+	"github.com/Dev-cmyser/calc_ipoteka/pkg/logger"
+	"github.com/gin-gonic/gin"
 )
 
 // @title           Calculate Ipoteca Service
@@ -17,56 +22,30 @@ import (
 // @host      localhost:8080
 // @BasePath  /
 
-func Run(configPath string) {
-	log := SetLogger()
+func Run(cfg *config.Config) {
+	log := logger.New(cfg.Log.Level)
+	log.Info("Initializing services...")
 
-	// Configuration
-	cfg, err := config.NewConfig(configPath)
-	if err != nil {
-		log.Fatal().Msgf("Config error: %s", err)
-	}
-
-	SetLoggerLevel(cfg.Log.Level)
-
-	// Services dependencies
-	log.Info().Msg("Initializing services...")
-	// deps := service.ServicesDependencies{
-	// 	Repos:    repositories,
-	// 	GDrive:   gdrive.New(cfg.WebAPI.GDriveJSONFilePath),
-	// 	Hasher:   hasher.NewSHA1Hasher(cfg.Hasher.Salt),
-	// 	SignKey:  cfg.JWT.SignKey,
-	// 	TokenTTL: cfg.JWT.TokenTTL,
-	// }
-	// services := service.NewServices(deps)
-
-	// Echo handler
-	// log.Info("Initializing handlers and routes...")
-	// handler := echo.New()
-	// setup handler validator as lib validator
-	// handler.Validator = validator.NewCustomValidator()
-	// v1.NewRouter(handler, services)
-
-	// HTTP server
-	// log.Info("Starting http server...")
-	// log.Debug("Server port: %s", cfg.HTTP.Port)
-	// httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
+	// HTTP Server
+	handler := gin.New()
+	v1.NewRouter(handler, log, translationUseCase)
+	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal
-	// log.Info("Configuring graceful shutdown...")
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	select {
 	case s := <-interrupt:
-		log.Info().Msg("app - Run - signal: " + s.String())
-		// case err = <-httpServer.Notify():
-		log.Error().Msgf("app - Run - httpServer.Notify: %w", err)
+		log.Info("app - Run - signal: " + s.String())
+	case err = <-httpServer.Notify():
+		log.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
 	}
 
-	// Graceful shutdown
-	log.Info().Msg("Shutting down...")
-	// err = httpServer.Shutdown()
+	// Shutdown
+	err = httpServer.Shutdown()
 	if err != nil {
-		log.Error().Msgf("app - Run - httpServer.Shutdown: %w", err)
+		log.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
+
 }
