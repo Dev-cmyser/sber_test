@@ -12,8 +12,6 @@ type Cache[K comparable, V any] interface {
 }
 
 func SetCache[K comparable, V any](ttl, size int) Cache[K, V] {
-
 	cache := expirable.NewLRU[K, V](size, nil, time.Second*time.Duration(ttl))
 	return cache
-
 }

@@ -36,9 +36,8 @@ func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface)
 // @Produce     json
 // @Success     200 {object} historyResponse
 // @Failure     500 {object} response
-// @Router      /mogrtgage/cache [get]
+// @Router      /mogrtgage/cache [get].
 func (r *ipotecaRoutes) cache(c *gin.Context) {
-
 	res := []entity.CachedMortgage{
 		{
 			ID: 0,
@@ -72,7 +71,7 @@ type executeResponse struct {
 // @Produce     json
 // @Success     200 {object} executeResponse
 // @Failure     500 {object} response
-// @Router      /mogrtgage/execute [get]
+// @Router      /mogrtgage/execute [get].
 func (r *ipotecaRoutes) execute(c *gin.Context) {
 	c.JSON(http.StatusOK, executeResponse{})
 	return
