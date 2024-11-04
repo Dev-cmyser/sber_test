@@ -9,5 +9,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o /bin/app ./cmd/app/main.go
 # Step 3: Final Stage
 FROM scratch
 COPY --from=builder /bin/app /
+COPY --from=builder /app/.env /
 COPY --from=builder /app/config /config
+
+ENV GIN_MODE=release
+
 CMD ["/app"]
