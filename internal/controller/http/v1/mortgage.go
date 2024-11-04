@@ -34,12 +34,13 @@ func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface)
 // @Accept      json
 // @Produce     json
 // @Success     200 {object} []entity.CachedMortgage
-// @Failure     500 {object} response
+// @Failure     404 {object} error
 // @Router      /mortgage/cache [get].
 func (r *mortgageRoutes) cache(c *gin.Context) {
 	res, err := r.uc.Cache(c)
 	if err != nil {
-		errorResponse(c, http.StatusNotFound, err.Error())
+		checkHttpErr(c, err, []HttpSignalError{ErrEmpty})
+		return
 
 	}
 	c.JSON(http.StatusOK, res)
@@ -54,9 +55,15 @@ type executeResponse struct {
 // @Accept      json
 // @Produce     json
 // @Success     200 {object} executeResponse
-// @Failure     500 {object} response
-// @Router      /mortgage/execute [get].
+// @Failure     500 {object} error
+// @Router      /mortgage/execute [post].
 func (r *mortgageRoutes) execute(c *gin.Context) {
-	c.JSON(http.StatusOK, executeResponse{})
+	res, err := r.uc.Execute(c, mortgage.Request{})
+	if err != nil {
+		checkHttpErr(c, err, []HttpSignalError{ErrChoosing, ErrLowInitPay, ErrOnlyOneProgram})
+		return
+
+	}
+	c.JSON(http.StatusOK, executeResponse{res})
 	return
 }
