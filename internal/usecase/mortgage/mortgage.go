@@ -6,14 +6,15 @@ import (
 
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity"
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity/mortgage"
+	"github.com/Dev-cmyser/calc_ipoteka/internal/usecase"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/cache"
 )
 
-type MortgageUseCase[K comparable, V any] struct {
+type MortgageUseCase[K comparable, V entity.CachedMortgage] struct {
 	c cache.Cache[K, V]
 }
 
-func New[K comparable, V any](c cache.Cache[K, V]) *MortgageUseCase[K, V] {
+func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUseCase[K, V] {
 	return &MortgageUseCase[K, V]{
 		c: c,
 	}
@@ -28,5 +29,18 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
 }
 
 func (uc *MortgageUseCase[K, V]) Cache(ctx context.Context) ([]entity.CachedMortgage, error) {
+	var res []entity.CachedMortgage
+	keys := uc.c.Keys()
+
+	if len(keys) == 0 {
+		return nil, usecase.ErrEmpty
+	}
+
+	for _, k := range keys {
+		// ignore expiration live
+		v, _ := uc.c.Get(k)
+		res = append(res, entity.CachedMortgage(v))
+	}
+
 	return []entity.CachedMortgage{}, nil
 }

@@ -3,7 +3,6 @@ package v1
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity"
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity/mortgage"
@@ -38,25 +37,10 @@ func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface)
 // @Failure     500 {object} response
 // @Router      /mortgage/cache [get].
 func (r *mortgageRoutes) cache(c *gin.Context) {
-	res := []entity.CachedMortgage{
-		{
-			ID: 0,
-			Params: mortgage.Params{
-				ObjectCost:     5000000,
-				InitialPayment: 1000000,
-				Months:         240,
-			},
-			Program: mortgage.Program{
-				Salary: true,
-			},
-			Aggregates: mortgage.Aggregates{
-				Rate:            8,
-				LoanSum:         4000000,
-				MonthlyPayment:  33458,
-				Overpayment:     4029920,
-				LastPaymentDate: time.Date(2044, time.February, 18, 0, 0, 0, 0, time.UTC),
-			},
-		},
+	res, err := r.uc.Cache(c)
+	if err != nil {
+		errorResponse(c, http.StatusNotFound, err.Error())
+
 	}
 	c.JSON(http.StatusOK, res)
 	return

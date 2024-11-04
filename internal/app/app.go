@@ -8,7 +8,8 @@ import (
 
 	"github.com/Dev-cmyser/calc_ipoteka/config"
 	v1 "github.com/Dev-cmyser/calc_ipoteka/internal/controller/http/v1"
-	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usercase/mortgage"
+	"github.com/Dev-cmyser/calc_ipoteka/internal/entity"
+	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgage"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/cache"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/httpserver"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/logger"
@@ -26,8 +27,8 @@ import (
 func Run(cfg *config.Config) {
 	log := logger.New(cfg.Log.Level)
 
-	cache := cache.SetCache[int, any](cfg.Cache.TTL, cfg.Cache.SIZE)
-	mortgage := uc_mortgage.New(cache)
+	m_cache := cache.SetCache[int, entity.CachedMortgage](cfg.Cache.TTL, cfg.Cache.SIZE)
+	mortgage := uc_mortgage.New(m_cache)
 
 	// HTTP Server
 	handler := gin.New()
