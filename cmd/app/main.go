@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/Dev-cmyser/calc_ipoteka/config"
+	_ "github.com/Dev-cmyser/calc_ipoteka/docs"
 	"github.com/Dev-cmyser/calc_ipoteka/internal/app"
 )
 

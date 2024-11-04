@@ -16,13 +16,13 @@ type UseCase interface {
 	Cache(context.Context) ([]entity.CachedMortgage, error)
 }
 
-type ipotecaRoutes struct {
+type mortgageRoutes struct {
 	uc UseCase
 	l  logger.Interface
 }
 
 func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface) {
-	routers := &ipotecaRoutes{uc, l}
+	routers := &mortgageRoutes{uc, l}
 
 	h := handler.Group("/mortgage")
 	{
@@ -34,10 +34,10 @@ func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface)
 // @Summary     Get all cache
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} historyResponse
+// @Success     200 {object} []entity.CachedMortgage
 // @Failure     500 {object} response
 // @Router      /mogrtgage/cache [get].
-func (r *ipotecaRoutes) cache(c *gin.Context) {
+func (r *mortgageRoutes) cache(c *gin.Context) {
 	res := []entity.CachedMortgage{
 		{
 			ID: 0,
@@ -72,7 +72,7 @@ type executeResponse struct {
 // @Success     200 {object} executeResponse
 // @Failure     500 {object} response
 // @Router      /mogrtgage/execute [get].
-func (r *ipotecaRoutes) execute(c *gin.Context) {
+func (r *mortgageRoutes) execute(c *gin.Context) {
 	c.JSON(http.StatusOK, executeResponse{})
 	return
 }

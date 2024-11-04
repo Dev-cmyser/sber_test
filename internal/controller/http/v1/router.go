@@ -17,7 +17,7 @@ func NewRouter(handler *gin.Engine, l logger.Interface, uc UseCase) {
 	handler.Use(gin.Recovery())
 
 	swaggerHandler := ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DISABLE_SWAGGER_HTTP_HANDLER")
-	handler.GET("/swagger/*any", swaggerHandler)
+	handler.GET("/docs/*any", swaggerHandler)
 
 	h := handler.Group("/v1")
 	{
