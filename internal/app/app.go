@@ -23,10 +23,8 @@ import (
 
 // @host      localhost:8080
 // @BasePath  /
-
 func Run(cfg *config.Config) {
 	log := logger.New(cfg.Log.Level)
-	log.Info("Initializing services...")
 
 	cache := cache.SetCache[int, any](cfg.Cache.TTL, cfg.Cache.SIZE)
 	mortgage := uc_mortgage.New(cache)
@@ -38,6 +36,9 @@ func Run(cfg *config.Config) {
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	log.Info("Succes start")
+	log.Info("Enjoy your development!")
 
 	var err error
 	select {
@@ -51,4 +52,5 @@ func Run(cfg *config.Config) {
 	if err != nil {
 		log.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
+
 }

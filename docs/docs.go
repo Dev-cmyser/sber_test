@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/mogrtgage/cache": {
+        "/mortgage/cache": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -43,7 +43,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/mogrtgage/execute": {
+        "/mortgage/execute": {
             "get": {
                 "consumes": [
                     "application/json"

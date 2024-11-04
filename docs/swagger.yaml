@@ -64,7 +64,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /mogrtgage/cache:
+  /mortgage/cache:
     get:
       consumes:
       - application/json
@@ -82,7 +82,7 @@ paths:
           schema:
             $ref: '#/definitions/v1.response'
       summary: Get all cache
-  /mogrtgage/execute:
+  /mortgage/execute:
     get:
       consumes:
       - application/json
