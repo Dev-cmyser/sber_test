@@ -19,3 +19,7 @@ stop:
 .PHONY: stop
 
 clean: stop remove
+
+test:
+	go test ./... -v
+.PHONY: test
