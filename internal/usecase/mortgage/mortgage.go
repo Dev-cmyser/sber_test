@@ -74,6 +74,7 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
 }
 
 func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error {
+
 	id := uc.nextID()
 
 	cachedMortgage := entity.CachedMortgage{
@@ -89,6 +90,7 @@ func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error {
 	} else {
 		return errors.New("invalid key type")
 	}
+
 	var value V
 	if v, ok := any(cachedMortgage).(V); ok {
 		value = v
