@@ -12,6 +12,8 @@ import (
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/cache"
 )
 
+//go:generate mockery --all --output=./mocks --case=underscore --dir=../../../pkg/cache
+
 type MortgageUseCase[K comparable, V entity.CachedMortgage] struct {
 	c cache.Cache[K, V]
 	// Closure function but will be better use uuid func

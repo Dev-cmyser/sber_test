@@ -21,5 +21,5 @@ stop:
 clean: stop remove
 
 test:
-	go test ./... -v
+	ginkgo -v -r
 .PHONY: test
