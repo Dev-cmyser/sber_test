@@ -14,6 +14,7 @@ import (
 // @host        localhost:8080
 // @BasePath    /
 func NewRouter(handler *gin.Engine, l logger.Interface, uc UseCase) {
+	handler.Use(LoggerMiddleware())
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
 
