@@ -33,11 +33,7 @@ func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUs
 }
 
 func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Request) (entity.Mortgage, error) {
-	if req.ObjectCost <= 0 {
-		return entity.Mortgage{}, usecase.ErrLowInitPay
-	}
-
-	if float64(req.InitialPayment) < 0.2*float64(req.ObjectCost) {
+	if req.ObjectCost <= 0 || float64(req.InitialPayment) < 0.2*float64(req.ObjectCost) {
 		return entity.Mortgage{}, usecase.ErrLowInitPay
 	}
 

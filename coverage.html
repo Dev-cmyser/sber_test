@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgage/mortgage.go (67.2%)</option>
+				<option value="file0">github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgage/mortgage.go (80.4%)</option>
 				
 				</select>
 			</div>
@@ -100,34 +100,30 @@ type MortgageUseCase[K comparable, V entity.CachedMortgage] struct {
         nextID func() int
 }
 
-func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUseCase[K, V] <span class="cov10" title="2">{
+func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUseCase[K, V] <span class="cov10" title="7">{
         id := 0
 
         return &amp;MortgageUseCase[K, V]{
                 c: c,
-                nextID: func() int </span><span class="cov1" title="1">{
+                nextID: func() int </span><span class="cov6" title="3">{
                         id++
                         return id
                 }</span>,
         }
 }
 
-func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Request) (entity.Mortgage, error) <span class="cov10" title="2">{
-        if req.ObjectCost &lt;= 0 </span><span class="cov0" title="0">{
+func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Request) (entity.Mortgage, error) <span class="cov10" title="7">{
+        if req.ObjectCost &lt;= 0 || float64(req.InitialPayment) &lt; 0.2*float64(req.ObjectCost) </span><span class="cov1" title="1">{
                 return entity.Mortgage{}, usecase.ErrLowInitPay
         }</span>
 
-        <span class="cov10" title="2">if float64(req.InitialPayment) &lt; 0.2*float64(req.ObjectCost) </span><span class="cov1" title="1">{
-                return entity.Mortgage{}, usecase.ErrLowInitPay
-        }</span>
+        <span class="cov9" title="6">rate, err := uc.chooseProgramRate(req.Program)
 
-        <span class="cov1" title="1">rate, err := uc.chooseProgramRate(req.Program)
-
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov6" title="3">{
                 return entity.Mortgage{}, err
         }</span>
 
-        <span class="cov1" title="1">loanSum := req.ObjectCost - req.InitialPayment
+        <span class="cov6" title="3">loanSum := req.ObjectCost - req.InitialPayment
         monthlyPayment := calcMonthPayment(float64(loanSum), float64(rate), req.Months)
         overpayment := int(monthlyPayment*float64(req.Months) - float64(loanSum))
         lastPaymentDate := calcLastPaymentDate(req.Months)
@@ -153,7 +149,7 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
         return result, nil</span>
 }
 
-func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error <span class="cov1" title="1">{
+func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error <span class="cov6" title="3">{
 
         id := uc.nextID()
 
@@ -165,61 +161,61 @@ func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error <span c
         }
 
         var key K
-        if k, ok := any(id).(K); ok </span><span class="cov1" title="1">{
+        if k, ok := any(id).(K); ok </span><span class="cov6" title="3">{
                 key = k
         }</span> else<span class="cov0" title="0"> {
                 return errors.New("invalid key type")
         }</span>
 
-        <span class="cov1" title="1">var value V
-        if v, ok := any(cachedMortgage).(V); ok </span><span class="cov1" title="1">{
+        <span class="cov6" title="3">var value V
+        if v, ok := any(cachedMortgage).(V); ok </span><span class="cov6" title="3">{
                 value = v
         }</span> else<span class="cov0" title="0"> {
                 return errors.New("invalid value type")
         }</span>
 
-        <span class="cov1" title="1">uc.c.Add(key, value)
+        <span class="cov6" title="3">uc.c.Add(key, value)
 
         return nil</span>
 }
 
-func (uc *MortgageUseCase[K, V]) chooseProgramRate(prog mortgage.Program) (int, error) <span class="cov1" title="1">{
+func (uc *MortgageUseCase[K, V]) chooseProgramRate(prog mortgage.Program) (int, error) <span class="cov9" title="6">{
         selectedPrograms := 0
 
-        if prog.Salary != nil &amp;&amp; *prog.Salary </span><span class="cov1" title="1">{
+        if prog.Salary != nil &amp;&amp; *prog.Salary </span><span class="cov6" title="3">{
                 selectedPrograms++
         }</span>
-        <span class="cov1" title="1">if prog.Military != nil &amp;&amp; *prog.Military </span><span class="cov0" title="0">{
+        <span class="cov9" title="6">if prog.Military != nil &amp;&amp; *prog.Military </span><span class="cov6" title="3">{
                 selectedPrograms++
         }</span>
-        <span class="cov1" title="1">if prog.Base != nil &amp;&amp; *prog.Base </span><span class="cov0" title="0">{
+        <span class="cov9" title="6">if prog.Base != nil &amp;&amp; *prog.Base </span><span class="cov4" title="2">{
                 selectedPrograms++
         }</span>
 
-        <span class="cov1" title="1">if selectedPrograms == 0 </span><span class="cov0" title="0">{
+        <span class="cov9" title="6">if selectedPrograms == 0 </span><span class="cov1" title="1">{
                 return 0, usecase.ErrChoosing
-        }</span> else<span class="cov1" title="1"> if selectedPrograms &gt; 1 </span><span class="cov0" title="0">{
+        }</span> else<span class="cov8" title="5"> if selectedPrograms &gt; 1 </span><span class="cov4" title="2">{
                 return 0, usecase.ErrOnlyOneProgram
         }</span>
 
-        <span class="cov1" title="1">switch </span>{
+        <span class="cov6" title="3">switch </span>{
         case prog.Salary != nil &amp;&amp; *prog.Salary:<span class="cov1" title="1">
                 return 8.0, nil</span>
-        case prog.Military != nil &amp;&amp; *prog.Military:<span class="cov0" title="0">
+        case prog.Military != nil &amp;&amp; *prog.Military:<span class="cov1" title="1">
                 return 9.0, nil</span>
-        case prog.Base != nil &amp;&amp; *prog.Base:<span class="cov0" title="0">
+        case prog.Base != nil &amp;&amp; *prog.Base:<span class="cov1" title="1">
                 return 10.0, nil</span>
         default:<span class="cov0" title="0">
                 return 0, usecase.ErrOnlyOneProgram</span>
         }
 }
 
-func calcMonthPayment(loanSum float64, rate float64, months int) float64 <span class="cov1" title="1">{
+func calcMonthPayment(loanSum float64, rate float64, months int) float64 <span class="cov6" title="3">{
         monthlyRate := rate / 12 / 100
         return loanSum * (monthlyRate / (1 - math.Pow(1+monthlyRate, float64(-months))))
 }</span>
 
-func calcLastPaymentDate(months int) time.Time <span class="cov1" title="1">{
+func calcLastPaymentDate(months int) time.Time <span class="cov6" title="3">{
         now := time.Now()
         return now.AddDate(0, months, 0)
 }</span>
