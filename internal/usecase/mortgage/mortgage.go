@@ -39,7 +39,7 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
 		return entity.Mortgage{}, usecase.ErrLowInitPay
 	}
 
-	rate, err := uc.determineProgramRate(req.Program)
+	rate, err := uc.chooseProgramRate(req.Program)
 
 	if err != nil {
 		return entity.Mortgage{}, err
@@ -58,7 +58,7 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
 		},
 		Program: req.Program,
 		Aggregates: mortgage.Aggregates{
-			Rate:            int(rate),
+			Rate:            rate,
 			LoanSum:         loanSum,
 			MonthlyPayment:  int(monthlyPayment),
 			Overpayment:     overpayment,
@@ -99,10 +99,9 @@ func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error {
 	return nil
 }
 
-func (uc *MortgageUseCase[K, V]) determineProgramRate(prog mortgage.Program) (int, error) {
+func (uc *MortgageUseCase[K, V]) chooseProgramRate(prog mortgage.Program) (int, error) {
 	selectedPrograms := 0
 
-	// Проверяем, что указатели не равны nil, прежде чем разыменовывать
 	if prog.Salary != nil && *prog.Salary {
 		selectedPrograms++
 	}
