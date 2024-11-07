@@ -155,5 +155,5 @@ func (uc *MortgageUseCase[K, V]) Cache(ctx context.Context) ([]entity.CachedMort
 		res = append(res, entity.CachedMortgage(v))
 	}
 
-	return []entity.CachedMortgage{}, nil
+	return res, nil
 }
