@@ -2,6 +2,7 @@ package uc_mortgage
 
 import (
 	"context"
+	"errors"
 	"math"
 	"time"
 
@@ -13,11 +14,19 @@ import (
 
 type MortgageUseCase[K comparable, V entity.CachedMortgage] struct {
 	c cache.Cache[K, V]
+	// Closure function but will be better use uuid func
+	nextID func() int
 }
 
 func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUseCase[K, V] {
+	id := 0
+
 	return &MortgageUseCase[K, V]{
 		c: c,
+		nextID: func() int {
+			id++
+			return id
+		},
 	}
 }
 
@@ -31,6 +40,7 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
 	}
 
 	rate, err := uc.determineProgramRate(req.Program)
+
 	if err != nil {
 		return entity.Mortgage{}, err
 	}
@@ -56,7 +66,37 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
 		},
 	}
 
+	uc.saveToCache(result)
+
 	return result, nil
+}
+
+func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error {
+	id := uc.nextID()
+
+	cachedMortgage := entity.CachedMortgage{
+		ID:         id,
+		Params:     prog.Params,
+		Program:    prog.Program,
+		Aggregates: prog.Aggregates,
+	}
+
+	var key K
+	if k, ok := any(id).(K); ok {
+		key = k
+	} else {
+		return errors.New("invalid key type")
+	}
+	var value V
+	if v, ok := any(cachedMortgage).(V); ok {
+		value = v
+	} else {
+		return errors.New("invalid value type")
+	}
+
+	uc.c.Add(key, value)
+
+	return nil
 }
 
 func (uc *MortgageUseCase[K, V]) determineProgramRate(prog mortgage.Program) (int, error) {
