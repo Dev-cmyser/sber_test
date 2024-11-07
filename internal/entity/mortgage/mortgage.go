@@ -9,9 +9,9 @@ type Params struct {
 }
 
 type Program struct {
-	Salary   bool `json:"salary" binding:"omitempty"`
-	Military bool `json:"military" binding:"omitempty"`
-	Base     bool `json:"base" binding:"omitempty"`
+	Salary   *bool `json:"salary,omitempty"`
+	Military *bool `json:"military,omitempty"`
+	Base     *bool `json:"base,omitempty"`
 }
 
 type Aggregates struct {

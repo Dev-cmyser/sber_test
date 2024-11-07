@@ -101,13 +101,15 @@ func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error {
 
 func (uc *MortgageUseCase[K, V]) determineProgramRate(prog mortgage.Program) (int, error) {
 	selectedPrograms := 0
-	if prog.Salary {
+
+	// Проверяем, что указатели не равны nil, прежде чем разыменовывать
+	if prog.Salary != nil && *prog.Salary {
 		selectedPrograms++
 	}
-	if prog.Military {
+	if prog.Military != nil && *prog.Military {
 		selectedPrograms++
 	}
-	if prog.Base {
+	if prog.Base != nil && *prog.Base {
 		selectedPrograms++
 	}
 
@@ -118,11 +120,11 @@ func (uc *MortgageUseCase[K, V]) determineProgramRate(prog mortgage.Program) (in
 	}
 
 	switch {
-	case prog.Salary:
+	case prog.Salary != nil && *prog.Salary:
 		return 8.0, nil
-	case prog.Military:
+	case prog.Military != nil && *prog.Military:
 		return 9.0, nil
-	case prog.Base:
+	case prog.Base != nil && *prog.Base:
 		return 10.0, nil
 	default:
 		return 0, usecase.ErrOnlyOneProgram
