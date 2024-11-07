@@ -27,7 +27,7 @@ COVERAGE_FILE := $(PROJECT_ROOT)/coverage.out
 GINKGO = ginkgo
 
 test:
-	$(GINKGO) -v -r -succinct --cover  --coverprofile=$(COVERAGE_FILE)
+	$(GINKGO)  -r -succinct --cover  --coverprofile=$(COVERAGE_FILE)
 	go tool cover -html=$(COVERAGE_FILE) -o coverage.html
 
 show_cover:

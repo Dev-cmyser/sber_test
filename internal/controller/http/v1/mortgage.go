@@ -10,6 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:generate mockery --dir=../../../../pkg/logger --all --output=./mocks --case=underscore
+
+//go:generate mockery --dir=. --all --output=./mocks --case=underscore
+
 type UseCase interface {
 	Execute(context.Context, mortgage.Request) (entity.Mortgage, error)
 	Cache(context.Context) ([]entity.CachedMortgage, error)
@@ -68,12 +72,18 @@ func (r *mortgageRoutes) execute(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	r.l.Info("Received mortgage request: ", req)
+
 	res, err := r.uc.Execute(c, req)
 	if err != nil {
 		checkHttpErr(c, err, []HttpSignalError{ErrChoosing, ErrLowInitPay, ErrOnlyOneProgram})
 		return
 
 	}
+
+	r.l.Info("Calculated mortgage response: ", res)
+
 	c.JSON(http.StatusOK, executeResponse{res})
 	return
 }
