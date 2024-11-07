@@ -50,16 +50,21 @@ definitions:
       salary:
         type: boolean
     type: object
+  mortgage.Request:
+    properties:
+      initial_payment:
+        type: integer
+      months:
+        type: integer
+      object_cost:
+        type: integer
+      program:
+        $ref: '#/definitions/mortgage.Program'
+    type: object
   v1.executeResponse:
     properties:
       result:
         $ref: '#/definitions/entity.Mortgage'
-    type: object
-  v1.response:
-    properties:
-      error:
-        example: message
-        type: string
     type: object
 info:
   contact: {}
@@ -77,25 +82,34 @@ paths:
             items:
               $ref: '#/definitions/entity.CachedMortgage'
             type: array
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/v1.response'
+        "404":
+          description: Not Found
+          schema: {}
       summary: Get all cache
   /mortgage/execute:
-    get:
+    post:
       consumes:
       - application/json
+      description: Calculates mortgage payments and provides a summary of the payment
+        plan based on the input details and selected credit program.
+      parameters:
+      - description: Mortgage calculation request payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/mortgage.Request'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Successful mortgage calculation with loan details
           schema:
             $ref: '#/definitions/v1.executeResponse'
         "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/v1.response'
-      summary: Execute credit
+          description: Internal server error
+          schema: {}
+      summary: Mortgage Calculation
+      tags:
+      - Mortgage
 swagger: "2.0"

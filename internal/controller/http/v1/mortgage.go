@@ -51,14 +51,24 @@ type executeResponse struct {
 	Result entity.Mortgage `json:"result"`
 }
 
-// @Summary     Execute credit
+// Execute performs a mortgage calculation based on input details and selected credit program.
+// @Summary     Mortgage Calculation
+// @Description Calculates mortgage payments and provides a summary of the payment plan based on the input details and selected credit program.
+// @Tags        Mortgage
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} executeResponse
-// @Failure     500 {object} error
-// @Router      /mortgage/execute [post].
+// @Param       request body mortgage.Request true "Mortgage calculation request payload"
+// @Success     200 {object} executeResponse "Successful mortgage calculation with loan details"
+// @Failure     500 {object} error "Internal server error"
+// @Router      /mortgage/execute [post]
 func (r *mortgageRoutes) execute(c *gin.Context) {
-	res, err := r.uc.Execute(c, mortgage.Request{})
+	var req mortgage.Request
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	res, err := r.uc.Execute(c, req)
 	if err != nil {
 		checkHttpErr(c, err, []HttpSignalError{ErrChoosing, ErrLowInitPay, ErrOnlyOneProgram})
 		return
