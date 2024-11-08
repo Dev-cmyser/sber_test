@@ -9,7 +9,7 @@ import (
 	"github.com/Dev-cmyser/calc_ipoteka/config"
 	v1 "github.com/Dev-cmyser/calc_ipoteka/internal/controller/http/v1"
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity"
-	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgageUC"
+	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usecase/ucmortgage"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/cache"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/httpserver"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/logger"

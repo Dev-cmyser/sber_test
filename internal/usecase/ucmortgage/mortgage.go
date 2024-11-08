@@ -1,4 +1,5 @@
-package mortgageUC
+// Package ucmortgage usecase
+package ucmortgage
 
 import (
 	"context"
@@ -131,7 +132,7 @@ func (uc *MortgageUseCase[K, V]) chooseProgramRate(prog mortgage.Program) (int, 
 	}
 }
 
-func calcMonthPayment(loanSum float64, rate float64, months int) float64 {
+func calcMonthPayment(loanSum, rate float64, months int) float64 {
 	monthlyRate := rate / 12 / 100
 	return loanSum * (monthlyRate / (1 - math.Pow(1+monthlyRate, float64(-months))))
 }
@@ -143,12 +144,13 @@ func calcLastPaymentDate(months int) time.Time {
 
 // Cache s.
 func (uc *MortgageUseCase[K, V]) Cache(_ context.Context) ([]entity.CachedMortgage, error) {
-	var res []entity.CachedMortgage
 	keys := uc.c.Keys()
 
 	if len(keys) == 0 {
 		return nil, usecase.ErrEmpty
 	}
+
+	var res = make([]entity.CachedMortgage, 0, len(keys))
 
 	for _, k := range keys {
 		// ignore expiration live
