@@ -73,16 +73,12 @@ func (r *mortgageRoutes) execute(c *gin.Context) {
 		return
 	}
 
-	r.l.Info("Received mortgage request: ", req)
-
 	res, err := r.uc.Execute(c, req)
 	if err != nil {
 		checkHttpErr(c, err, []HttpSignalError{ErrChoosing, ErrLowInitPay, ErrOnlyOneProgram})
 		return
 
 	}
-
-	r.l.Info("Calculated mortgage response: ", res)
 
 	c.JSON(http.StatusOK, executeResponse{res})
 	return
