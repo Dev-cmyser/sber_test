@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,8 +26,8 @@ import (
 func Run(cfg *config.Config) {
 	log := logger.New(cfg.Log.Level)
 
-	m_cache := cache.SetCache[int, entity.CachedMortgage](cfg.Cache.TTL, cfg.Cache.SIZE)
-	mortgage := uc_mortgage.New(m_cache)
+	mCache := cache.SetCache[int, entity.CachedMortgage](cfg.Cache.TTL, cfg.Cache.SIZE)
+	mortgage := uc_mortgage.New(mCache)
 
 	// HTTP Server
 	handler := gin.New()
@@ -38,19 +37,22 @@ func Run(cfg *config.Config) {
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	log.Info("Succes start")
-	log.Info("Enjoy your development!")
+	const (
+		signalLogFormat        = "app - Run - signal: %s"
+		notifyErrorLogFormat   = "app - Run - httpServer.Notify: %w"
+		shutdownErrorLogFormat = "app - Run - httpServer.Shutdown: %w"
+	)
 
 	var err error
 	select {
 	case s := <-interrupt:
-		log.Info("app - Run - signal: " + s.String())
+		log.Info(signalLogFormat, s.String())
 	case err = <-httpServer.Notify():
-		log.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
+		log.Error(notifyErrorLogFormat, err)
 	}
 
 	err = httpServer.Shutdown()
 	if err != nil {
-		log.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
+		log.Error(shutdownErrorLogFormat, err)
 	}
 }

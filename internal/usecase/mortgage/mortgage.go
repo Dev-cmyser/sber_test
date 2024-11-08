@@ -2,7 +2,6 @@ package uc_mortgage
 
 import (
 	"context"
-	"errors"
 	"math"
 	"time"
 
@@ -83,14 +82,14 @@ func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error {
 	if k, ok := any(id).(K); ok {
 		key = k
 	} else {
-		return errors.New("invalid key type")
+		return usecase.ErrInvalidKeyType
 	}
 
 	var value V
 	if v, ok := any(cachedMortgage).(V); ok {
 		value = v
 	} else {
-		return errors.New("invalid value type")
+		return usecase.ErrInvalidValueType
 	}
 
 	uc.c.Add(key, value)

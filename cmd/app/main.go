@@ -1,9 +1,12 @@
+// Package main содержит основной запуск приложения и инициализацию сервисов.
 package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/Dev-cmyser/calc_ipoteka/config"
@@ -29,11 +32,27 @@ func main() {
 
 // Dynamic setting env.
 func loadEnvFromFile(filePath string) error {
-	file, err := os.Open(filePath)
+	absPath, err := filepath.Abs(filePath)
+
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get absolute path: %w", err)
 	}
-	defer file.Close()
+
+	absPath = filepath.Clean(absPath)
+	if !strings.HasPrefix(absPath, "/path/to/safe/dir/") {
+		return fmt.Errorf("file path is outside of the allowed safe directory:  %w", err)
+	}
+
+	file, err := os.Open(absPath)
+	if err != nil {
+		return fmt.Errorf("failed to open file %s: %w", filePath, err)
+	}
+
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Error closing file: %v", err)
+		}
+	}()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -47,11 +66,14 @@ func loadEnvFromFile(filePath string) error {
 		}
 		key := strings.TrimSpace(parts[0])
 		value := strings.TrimSpace(parts[1])
-		os.Setenv(key, value)
+
+		if err := os.Setenv(key, value); err != nil {
+			return fmt.Errorf("failed to set environment variable %s: %w", key, err)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return err
+		return fmt.Errorf("failed to scan file %s: %w", filePath, err)
 	}
 	return nil
 }

@@ -1,3 +1,4 @@
+// Package v1 contains HTTP handlers and routes for version 1 of the API.
 package v1
 
 import (

@@ -47,7 +47,6 @@ func (r *mortgageRoutes) cache(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, res)
-	return
 }
 
 type executeResponse struct {
@@ -79,5 +78,4 @@ func (r *mortgageRoutes) execute(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, executeResponse{res})
-	return
 }
