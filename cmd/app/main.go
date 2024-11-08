@@ -27,7 +27,7 @@ func main() {
 	app.Run(cfg)
 }
 
-// Dynamic setting env
+// Dynamic setting env.
 func loadEnvFromFile(filePath string) error {
 	file, err := os.Open(filePath)
 	if err != nil {

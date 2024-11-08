@@ -23,7 +23,7 @@ import (
 // @contact.email  kirrallt@mail.ru
 
 // @host      localhost:8080
-// @BasePath  /
+// @BasePath  /.
 func Run(cfg *config.Config) {
 	log := logger.New(cfg.Log.Level)
 
@@ -53,5 +53,4 @@ func Run(cfg *config.Config) {
 	if err != nil {
 		log.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
-
 }

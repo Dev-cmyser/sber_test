@@ -7,7 +7,7 @@ prod:
 .PHONY: prod
 
 lint:
-	golangci-lint run -c .golangci.yml
+	golangci-lint run -c .golangci.yml --fix
 .PHONY: lint
 
 remove:

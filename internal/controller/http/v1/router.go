@@ -12,7 +12,7 @@ import (
 // @title       Calculate Ipoteca API
 // @version     1.0
 // @host        localhost:8080
-// @BasePath    /
+// @BasePath    /.
 func NewRouter(handler *gin.Engine, l logger.Interface, uc UseCase) {
 	handler.Use(LoggerMiddleware())
 	handler.Use(gin.Logger())
