@@ -14,17 +14,17 @@ import (
 
 //go:generate mockery --dir=. --all --output=./mocks --case=underscore
 
-type UseCase interface {
+type useCase interface {
 	Execute(context.Context, mortgage.Request) (entity.Mortgage, error)
 	Cache(context.Context) ([]entity.CachedMortgage, error)
 }
 
 type mortgageRoutes struct {
-	uc UseCase
+	uc useCase
 	l  logger.Interface
 }
 
-func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface) {
+func newMortgageRoutes(handler *gin.RouterGroup, uc useCase, l logger.Interface) {
 	routers := &mortgageRoutes{uc, l}
 
 	h := handler.Group("/mortgage")
@@ -43,7 +43,7 @@ func newMortgageRoutes(handler *gin.RouterGroup, uc UseCase, l logger.Interface)
 func (r *mortgageRoutes) cache(c *gin.Context) {
 	res, err := r.uc.Cache(c)
 	if err != nil {
-		checkHttpErr(c, err, []HttpSignalError{ErrEmpty})
+		checkHTTPErr(c, err, []HTTPSignalError{ErrEmpty})
 		return
 	}
 	c.JSON(http.StatusOK, res)
@@ -73,7 +73,7 @@ func (r *mortgageRoutes) execute(c *gin.Context) {
 
 	res, err := r.uc.Execute(c, req)
 	if err != nil {
-		checkHttpErr(c, err, []HttpSignalError{ErrChoosing, ErrLowInitPay, ErrOnlyOneProgram})
+		checkHTTPErr(c, err, []HTTPSignalError{ErrChoosing, ErrLowInitPay, ErrOnlyOneProgram})
 		return
 	}
 

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/Dev-cmyser/calc_ipoteka/config"
@@ -17,7 +16,7 @@ import (
 const configPath = "config/config.yml"
 
 func main() {
-	err := loadEnvFromFile(".env")
+	err := loadEnvFromFile()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
@@ -31,21 +30,10 @@ func main() {
 }
 
 // Dynamic setting env.
-func loadEnvFromFile(filePath string) error {
-	absPath, err := filepath.Abs(filePath)
-
+func loadEnvFromFile() error {
+	file, err := os.Open(".env")
 	if err != nil {
-		return fmt.Errorf("failed to get absolute path: %w", err)
-	}
-
-	absPath = filepath.Clean(absPath)
-	if !strings.HasPrefix(absPath, "/path/to/safe/dir/") {
-		return fmt.Errorf("file path is outside of the allowed safe directory:  %w", err)
-	}
-
-	file, err := os.Open(absPath)
-	if err != nil {
-		return fmt.Errorf("failed to open file %s: %w", filePath, err)
+		return fmt.Errorf("failed to open file: %w", err)
 	}
 
 	defer func() {
@@ -73,7 +61,7 @@ func loadEnvFromFile(filePath string) error {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("failed to scan file %s: %w", filePath, err)
+		return fmt.Errorf("failed to scan file: %w", err)
 	}
 	return nil
 }

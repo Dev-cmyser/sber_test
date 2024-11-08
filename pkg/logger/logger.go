@@ -1,3 +1,4 @@
+// Package logger s
 package logger
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/rs/zerolog"
 )
 
+// Interface s.
 type Interface interface {
 	Debug(message interface{}, args ...interface{})
 	Info(message string, args ...interface{})
@@ -17,12 +19,14 @@ type Interface interface {
 	Fatal(message interface{}, args ...interface{})
 }
 
+// Logger s.
 type Logger struct {
 	logger *zerolog.Logger
 }
 
 var _ Interface = (*Logger)(nil)
 
+// New s.
 func New(level string) *Logger {
 	var l zerolog.Level
 
@@ -65,18 +69,22 @@ func New(level string) *Logger {
 	}
 }
 
+// Debug s.
 func (l *Logger) Debug(message interface{}, args ...interface{}) {
 	l.msg("debug", message, args...)
 }
 
+// Info s.
 func (l *Logger) Info(message string, args ...interface{}) {
 	l.log(message, args...)
 }
 
+// Warn s.
 func (l *Logger) Warn(message string, args ...interface{}) {
 	l.log(message, args...)
 }
 
+// Error s.
 func (l *Logger) Error(message interface{}, args ...interface{}) {
 	if l.logger.GetLevel() == zerolog.DebugLevel {
 		l.Debug(message, args...)
@@ -85,6 +93,7 @@ func (l *Logger) Error(message interface{}, args ...interface{}) {
 	l.msg("error", message, args...)
 }
 
+// Fatal s.
 func (l *Logger) Fatal(message interface{}, args ...interface{}) {
 	l.msg("fatal", message, args...)
 

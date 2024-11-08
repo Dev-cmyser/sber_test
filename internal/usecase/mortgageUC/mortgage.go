@@ -1,4 +1,4 @@
-package uc_mortgage
+package mortgageUC
 
 import (
 	"context"
@@ -13,12 +13,14 @@ import (
 
 //go:generate mockery --all --output=./mocks --case=underscore --dir=../../../pkg/cache
 
+// MortgageUseCase s.
 type MortgageUseCase[K comparable, V entity.CachedMortgage] struct {
 	c cache.Cache[K, V]
 	// Closure function but will be better use uuid func
 	nextID func() int
 }
 
+// New s.
 func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUseCase[K, V] {
 	id := 0
 
@@ -31,7 +33,8 @@ func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUs
 	}
 }
 
-func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Request) (entity.Mortgage, error) {
+// Execute s.
+func (uc *MortgageUseCase[K, V]) Execute(_ context.Context, req mortgage.Request) (entity.Mortgage, error) {
 	if req.ObjectCost <= 0 || float64(req.InitialPayment) < 0.2*float64(req.ObjectCost) {
 		return entity.Mortgage{}, usecase.ErrLowInitPay
 	}
@@ -138,7 +141,8 @@ func calcLastPaymentDate(months int) time.Time {
 	return now.AddDate(0, months, 0)
 }
 
-func (uc *MortgageUseCase[K, V]) Cache(ctx context.Context) ([]entity.CachedMortgage, error) {
+// Cache s.
+func (uc *MortgageUseCase[K, V]) Cache(_ context.Context) ([]entity.CachedMortgage, error) {
 	var res []entity.CachedMortgage
 	keys := uc.c.Keys()
 

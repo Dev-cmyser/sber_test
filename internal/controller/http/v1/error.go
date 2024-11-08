@@ -8,47 +8,47 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type response struct {
-	Error string `json:"error" example:"message"`
-}
-
-type HttpSignalError interface {
+// HTTPSignalError s.
+type HTTPSignalError interface {
 	error
 	Status() int
-	UnWrap() error
+	unWrap() error
 }
 
 type errorResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
-type HttpError struct {
+// HTTPError s.
+type HTTPError struct {
 	error
 	status int
 }
 
-func NewHttpError(error error, status int) *HttpError {
-	return &HttpError{
+func newHttpError(error error, status int) *HTTPError {
+	return &HTTPError{
 		error:  error,
 		status: status,
 	}
 }
 
-func (e *HttpError) Error() string {
+// Error s.
+func (e *HTTPError) Error() string {
 	return e.error.Error()
 }
 
-func (e *HttpError) Status() int {
+// Status s.
+func (e *HTTPError) Status() int {
 	return e.status
 }
 
-func (e *HttpError) UnWrap() error {
+func (e *HTTPError) unWrap() error {
 	return e.error
 }
 
-func checkHttpErr(c *gin.Context, err error, signalErrors []HttpSignalError) {
+func checkHTTPErr(c *gin.Context, err error, signalErrors []HTTPSignalError) {
 	for _, sigerr := range signalErrors {
-		if errors.Is(err, sigerr.UnWrap()) {
+		if errors.Is(err, sigerr.unWrap()) {
 			c.AbortWithStatusJSON(sigerr.Status(), errorResponse{sigerr.Error()})
 			return
 		}
@@ -56,9 +56,10 @@ func checkHttpErr(c *gin.Context, err error, signalErrors []HttpSignalError) {
 	c.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse{err.Error()})
 }
 
+// usecase.
 var (
-	ErrEmpty          = NewHttpError(usecase.ErrEmpty, http.StatusNotFound)
-	ErrChoosing       = NewHttpError(usecase.ErrChoosing, http.StatusBadRequest)
-	ErrOnlyOneProgram = NewHttpError(usecase.ErrOnlyOneProgram, http.StatusBadRequest)
-	ErrLowInitPay     = NewHttpError(usecase.ErrLowInitPay, http.StatusBadRequest)
+	ErrEmpty          = newHttpError(usecase.ErrEmpty, http.StatusNotFound)
+	ErrChoosing       = newHttpError(usecase.ErrChoosing, http.StatusBadRequest)
+	ErrOnlyOneProgram = newHttpError(usecase.ErrOnlyOneProgram, http.StatusBadRequest)
+	ErrLowInitPay     = newHttpError(usecase.ErrLowInitPay, http.StatusBadRequest)
 )

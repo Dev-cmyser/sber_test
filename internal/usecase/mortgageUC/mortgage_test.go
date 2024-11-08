@@ -1,4 +1,4 @@
-package uc_mortgage_test
+package mortgageUC_test
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity"
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity/mortgage"
 	"github.com/Dev-cmyser/calc_ipoteka/internal/usecase"
-	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgage"
-	"github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgage/mocks"
+	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgageUC"
+	"github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgageUC/mocks"
 	gin "github.com/onsi/ginkgo"
 	gom "github.com/onsi/gomega"
 	"github.com/stretchr/testify/mock"

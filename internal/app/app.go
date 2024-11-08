@@ -1,3 +1,4 @@
+// Package app contains run func for start app
 package app
 
 import (
@@ -8,7 +9,7 @@ import (
 	"github.com/Dev-cmyser/calc_ipoteka/config"
 	v1 "github.com/Dev-cmyser/calc_ipoteka/internal/controller/http/v1"
 	"github.com/Dev-cmyser/calc_ipoteka/internal/entity"
-	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgage"
+	uc_mortgage "github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgageUC"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/cache"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/httpserver"
 	"github.com/Dev-cmyser/calc_ipoteka/pkg/logger"
@@ -23,6 +24,8 @@ import (
 
 // @host      localhost:8080
 // @BasePath  /.
+
+// Run start app.
 func Run(cfg *config.Config) {
 	log := logger.New(cfg.Log.Level)
 

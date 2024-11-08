@@ -14,7 +14,9 @@ import (
 // @version     1.0
 // @host        localhost:8080
 // @BasePath    /.
-func NewRouter(handler *gin.Engine, l logger.Interface, uc UseCase) {
+
+// NewRouter s.
+func NewRouter(handler *gin.Engine, l logger.Interface, uc useCase) {
 	handler.Use(LoggerMiddleware())
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
