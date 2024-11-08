@@ -26,7 +26,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, uc useCase) {
 
 	docs.SwaggerInfo.BasePath = "/v1"
 	h := handler.Group("/v1")
-	{
-		newMortgageRoutes(h, uc, l)
-	}
+
+	newMortgageRoutes(h, uc, l)
 }

@@ -25,9 +25,9 @@ type HTTPError struct {
 	status int
 }
 
-func newHttpError(error error, status int) *HTTPError {
+func newHTTPError(err error, status int) *HTTPError {
 	return &HTTPError{
-		error:  error,
+		error:  err,
 		status: status,
 	}
 }
@@ -58,8 +58,8 @@ func checkHTTPErr(c *gin.Context, err error, signalErrors []HTTPSignalError) {
 
 // usecase.
 var (
-	ErrEmpty          = newHttpError(usecase.ErrEmpty, http.StatusNotFound)
-	ErrChoosing       = newHttpError(usecase.ErrChoosing, http.StatusBadRequest)
-	ErrOnlyOneProgram = newHttpError(usecase.ErrOnlyOneProgram, http.StatusBadRequest)
-	ErrLowInitPay     = newHttpError(usecase.ErrLowInitPay, http.StatusBadRequest)
+	ErrEmpty          = newHTTPError(usecase.ErrEmpty, http.StatusNotFound)
+	ErrChoosing       = newHTTPError(usecase.ErrChoosing, http.StatusBadRequest)
+	ErrOnlyOneProgram = newHTTPError(usecase.ErrOnlyOneProgram, http.StatusBadRequest)
+	ErrLowInitPay     = newHTTPError(usecase.ErrLowInitPay, http.StatusBadRequest)
 )

@@ -19,17 +19,17 @@ type Program struct {
 
 // Aggregates s.
 type Aggregates struct {
+	LastPaymentDate time.Time `json:"last_payment_date"`
 	Rate            int       `json:"rate"`
 	LoanSum         int       `json:"loan_sum"`
 	MonthlyPayment  int       `json:"monthly_payment"`
 	Overpayment     int       `json:"overpayment"`
-	LastPaymentDate time.Time `json:"last_payment_date"`
 }
 
 // Request s.
 type Request struct {
+	Program        Program `json:"program"`
 	ObjectCost     int     `json:"object_cost"`
 	InitialPayment int     `json:"initial_payment"`
 	Months         int     `json:"months"`
-	Program        Program `json:"program"`
 }

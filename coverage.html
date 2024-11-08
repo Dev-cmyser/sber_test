@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>mortgage: Go Coverage Report</title>
+		<title>ucmortgage: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/Dev-cmyser/calc_ipoteka/internal/usecase/mortgage/mortgage.go (80.4%)</option>
+				<option value="file0">github.com/Dev-cmyser/calc_ipoteka/internal/usecase/ucmortgage/mortgage.go (79.3%)</option>
 				
 				</select>
 			</div>
@@ -78,11 +78,11 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package uc_mortgage
+		<pre class="file" id="file0" style="display: none">// Package ucmortgage usecase
+package ucmortgage
 
 import (
         "context"
-        "errors"
         "math"
         "time"
 
@@ -94,12 +94,14 @@ import (
 
 //go:generate mockery --all --output=./mocks --case=underscore --dir=../../../pkg/cache
 
+// MortgageUseCase s.
 type MortgageUseCase[K comparable, V entity.CachedMortgage] struct {
         c cache.Cache[K, V]
         // Closure function but will be better use uuid func
         nextID func() int
 }
 
+// New s.
 func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUseCase[K, V] <span class="cov10" title="7">{
         id := 0
 
@@ -112,7 +114,8 @@ func New[K comparable, V entity.CachedMortgage](c cache.Cache[K, V]) *MortgageUs
         }
 }
 
-func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Request) (entity.Mortgage, error) <span class="cov10" title="7">{
+// Execute s.
+func (uc *MortgageUseCase[K, V]) Execute(_ context.Context, req mortgage.Request) (entity.Mortgage, error) <span class="cov10" title="7">{
         if req.ObjectCost &lt;= 0 || float64(req.InitialPayment) &lt; 0.2*float64(req.ObjectCost) </span><span class="cov1" title="1">{
                 return entity.Mortgage{}, usecase.ErrLowInitPay
         }</span>
@@ -144,13 +147,16 @@ func (uc *MortgageUseCase[K, V]) Execute(ctx context.Context, req mortgage.Reque
                 },
         }
 
-        uc.saveToCache(result)
+        err = uc.saveToCache(result)
 
-        return result, nil</span>
+        if err != nil </span><span class="cov0" title="0">{
+                return entity.Mortgage{}, err
+        }</span>
+
+        <span class="cov6" title="3">return result, nil</span>
 }
 
 func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error <span class="cov6" title="3">{
-
         id := uc.nextID()
 
         cachedMortgage := entity.CachedMortgage{
@@ -164,14 +170,14 @@ func (uc *MortgageUseCase[K, V]) saveToCache(prog entity.Mortgage) error <span c
         if k, ok := any(id).(K); ok </span><span class="cov6" title="3">{
                 key = k
         }</span> else<span class="cov0" title="0"> {
-                return errors.New("invalid key type")
+                return usecase.ErrInvalidKeyType
         }</span>
 
         <span class="cov6" title="3">var value V
         if v, ok := any(cachedMortgage).(V); ok </span><span class="cov6" title="3">{
                 value = v
         }</span> else<span class="cov0" title="0"> {
-                return errors.New("invalid value type")
+                return usecase.ErrInvalidValueType
         }</span>
 
         <span class="cov6" title="3">uc.c.Add(key, value)
@@ -210,7 +216,7 @@ func (uc *MortgageUseCase[K, V]) chooseProgramRate(prog mortgage.Program) (int, 
         }
 }
 
-func calcMonthPayment(loanSum float64, rate float64, months int) float64 <span class="cov6" title="3">{
+func calcMonthPayment(loanSum, rate float64, months int) float64 <span class="cov6" title="3">{
         monthlyRate := rate / 12 / 100
         return loanSum * (monthlyRate / (1 - math.Pow(1+monthlyRate, float64(-months))))
 }</span>
@@ -220,15 +226,17 @@ func calcLastPaymentDate(months int) time.Time <span class="cov6" title="3">{
         return now.AddDate(0, months, 0)
 }</span>
 
-func (uc *MortgageUseCase[K, V]) Cache(ctx context.Context) ([]entity.CachedMortgage, error) <span class="cov0" title="0">{
-        var res []entity.CachedMortgage
+// Cache s.
+func (uc *MortgageUseCase[K, V]) Cache(_ context.Context) ([]entity.CachedMortgage, error) <span class="cov0" title="0">{
         keys := uc.c.Keys()
 
         if len(keys) == 0 </span><span class="cov0" title="0">{
                 return nil, usecase.ErrEmpty
         }</span>
 
-        <span class="cov0" title="0">for _, k := range keys </span><span class="cov0" title="0">{
+        <span class="cov0" title="0">var res = make([]entity.CachedMortgage, 0, len(keys))
+
+        for _, k := range keys </span><span class="cov0" title="0">{
                 // ignore expiration live
                 v, _ := uc.c.Get(k)
                 res = append(res, entity.CachedMortgage(v))

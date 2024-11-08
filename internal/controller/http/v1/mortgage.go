@@ -28,10 +28,9 @@ func newMortgageRoutes(handler *gin.RouterGroup, uc useCase, l logger.Interface)
 	routers := &mortgageRoutes{uc, l}
 
 	h := handler.Group("/mortgage")
-	{
-		h.GET("/cache", routers.cache)
-		h.POST("/execute", routers.execute)
-	}
+
+	h.GET("/cache", routers.cache)
+	h.POST("/execute", routers.execute)
 }
 
 // @Summary     Get all cache

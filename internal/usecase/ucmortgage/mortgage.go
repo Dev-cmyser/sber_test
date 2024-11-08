@@ -67,7 +67,11 @@ func (uc *MortgageUseCase[K, V]) Execute(_ context.Context, req mortgage.Request
 		},
 	}
 
-	uc.saveToCache(result)
+	err = uc.saveToCache(result)
+
+	if err != nil {
+		return entity.Mortgage{}, err
+	}
 
 	return result, nil
 }

@@ -1,7 +1,9 @@
+// Package usecase s
 package usecase
 
 import "errors"
 
+// Errors.
 var (
 	ErrEmpty          = errors.New("empty cache")
 	ErrChoosing       = errors.New("choose program")
