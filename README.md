@@ -34,3 +34,7 @@ make test
 ```bash
 make lint
 ```
+
+
+## Coverage 
+<img width="1427" alt="image" src="https://github.com/user-attachments/assets/8f4e77b4-ea52-4d88-86d0-d758a16d5de5">
