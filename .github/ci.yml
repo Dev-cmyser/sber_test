@@ -13,4 +13,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run custom Go action
-        uses: Dev-Cmyser/workflows@main
+        uses: Dev-cmyser/workflows@main
