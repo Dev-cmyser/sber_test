@@ -14,3 +14,5 @@ jobs:
     steps:
       - name: Run custom Go action
         uses: Dev-cmyser/workflows@main
+        with:
+          go-version: "1.23.0"
